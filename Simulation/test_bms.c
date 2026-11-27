@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "bms_core.h"
 
-/* Battery model function declarations */
 int BatteryModel_GetReading(
     unsigned int profile,
     float output[BMS_NUM_CELLS]
@@ -11,17 +10,15 @@ int BatteryModel_GetReading(
 unsigned int BatteryModel_GetProfileCount(void);
 
 int main(void) {
-
     BmsData bms;
     float cell_voltage[BMS_NUM_CELLS];
-
     float previous_imbalance = 0.0f;
 
     unsigned int profile;
     unsigned int i;
 
     printf("\n====================================\n");
-    printf("     STM32 EV BATTERY MANAGEMENT\n");
+    printf("     EV BATTERY MANAGEMENT SYSTEM\n");
     printf("====================================\n");
 
     for (profile = 0;
@@ -45,17 +42,14 @@ int main(void) {
 
         for (i = 0; i < BMS_NUM_CELLS; i++) {
             printf("Cell %u: %.3f V\n",
-                   i + 1,
-                   cell_voltage[i]);
+                   i + 1, cell_voltage[i]);
         }
 
-        printf("\nWeakest Cell: Cell %u (%.3f V)\n",
-               bms.weakest_cell + 1,
-               bms.weakest_voltage);
+        printf("Weakest Cell: Cell %u (%.3f V)\n",
+               bms.weakest_cell + 1, bms.weakest_voltage);
 
         printf("Strongest Cell: Cell %u (%.3f V)\n",
-               bms.strongest_cell + 1,
-               bms.strongest_voltage);
+               bms.strongest_cell + 1, bms.strongest_voltage);
 
         printf("Voltage Imbalance: %.2f mV\n",
                bms.imbalance_mv);
@@ -63,25 +57,17 @@ int main(void) {
         printf("Adaptive Threshold: %.2f mV\n",
                bms.adaptive_threshold_mv);
 
-        printf("SoC: %.1f %%\n",
-               bms.state_of_charge_percent);
+        printf("SoC: %.1f %%\n", bms.state_of_charge_percent);
+        printf("Discharge Rate: %.2f C\n", bms.discharge_rate_c);
 
-        printf("Discharge Rate: %.2f C\n",
-               bms.discharge_rate_c);
+        printf("Trend: %s\n",
+            bms.trend == BMS_TREND_INCREASING ? "INCREASING" :
+            bms.trend == BMS_TREND_DECREASING ? "DECREASING" :
+            "STABLE");
 
-        if (bms.trend == BMS_TREND_INCREASING) {
-            printf("Trend: INCREASING\n");
-        } else if (bms.trend == BMS_TREND_DECREASING) {
-            printf("Trend: DECREASING\n");
-        } else {
-            printf("Trend: STABLE\n");
-        }
-
-        if (bms.status == BMS_STATUS_IMBALANCE_WARNING) {
-            printf("Status: IMBALANCE WARNING!\n");
-        } else {
-            printf("Status: NORMAL\n");
-        }
+        printf("Status: %s\n",
+            bms.status == BMS_STATUS_IMBALANCE_WARNING ?
+            "IMBALANCE WARNING" : "NORMAL");
 
         previous_imbalance = bms.imbalance_mv;
     }

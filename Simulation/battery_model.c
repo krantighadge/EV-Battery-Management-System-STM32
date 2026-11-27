@@ -2,12 +2,21 @@
 #include <stddef.h>
 #include "bms_core.h"
 
-static const float battery_profiles[][BMS_NUM_CELLS] = {
-    {3.75f, 3.76f, 3.74f, 3.75f},
-    {3.74f, 3.78f, 3.70f, 3.79f},
-    {3.72f, 3.82f, 3.65f, 3.88f},
-    {3.70f, 3.84f, 3.62f, 3.92f},
-    {3.69f, 3.85f, 3.60f, 3.94f}
+static const float battery_profiles[][16] = {
+    {3.75f, 3.76f, 3.74f, 3.75f,
+     3.75f, 3.76f, 3.74f, 3.75f,
+     3.75f, 3.76f, 3.74f, 3.75f,
+     3.75f, 3.76f, 3.74f, 3.75f},
+
+    {3.74f, 3.78f, 3.70f, 3.79f,
+     3.75f, 3.76f, 3.73f, 3.77f,
+     3.72f, 3.75f, 3.78f, 3.74f,
+     3.76f, 3.71f, 3.77f, 3.75f},
+
+    {3.72f, 3.82f, 3.65f, 3.88f,
+     3.75f, 3.79f, 3.73f, 3.80f,
+     3.70f, 3.76f, 3.81f, 3.74f,
+     3.78f, 3.69f, 3.77f, 3.83f}
 };
 
 #define PROFILE_COUNT \
@@ -19,7 +28,8 @@ int BatteryModel_GetReading(
 ) {
     unsigned int i;
 
-    if (output == NULL || profile >= PROFILE_COUNT) {
+    if (output == NULL || profile >= PROFILE_COUNT ||
+        BMS_NUM_CELLS > 16) {
         return 0;
     }
 
